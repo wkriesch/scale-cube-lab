@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # --- DATABASES ---
+# Shard 1 (Padrão)
+  postgres-db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: users_db
+    networks:
+      - scale-cube-net
+
+  # Shard 2 (Novo)
+  postgres-db-shard2:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: users_db
+    networks:
+      - scale-cube-net
+
+  redis-db:
+    image: redis:alpine
+    networks:
+      - scale-cube-net
+
+  mongodb:
+    image: mongo:4.4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    networks:
+      - scale-cube-net
+
+  # --- APPLICATIONS ---
+  service-a:
+    build: ./service-a-users
+    ports:
+      - "8001:8000"
+    environment:
+      - DB_HOST=postgres-db
+      - DB_USER=postgres
+      - DB_PASS=password123
+      - DB_NAME=users_db
+      - SERVICE_B_URL=http://service-b:8000
+      - SERVICE_C_URL=http://service-c:8000
+    depends_on:
+      - postgres-db
+    networks:
+      - scale-cube-net
+
+  service-b:
+    build: ./service-b-session
+    ports:
+      - "8002:8000"
+    environment:
+      - REDIS_HOST=redis-db
+    depends_on:
+      - redis-db
+    networks:
+      - scale-cube-net
+
+  service-c:
+    build: ./service-c-audit
+    ports:
+      - "8003:8000"
+    environment:
+      - MONGO_URL=mongodb://admin:password123@mongodb:27017
+    depends_on:
+      - mongodb
+    networks:
+      - scale-cube-net
+
+networks:
+  scale-cube-net:
+    driver: bridge

@@ -46,12 +46,13 @@ Este repositório contém um ambiente experimental projetado para validar as tr�
 - Python 3.9+ (para rodar o script de stress)
 - Bibliotecas Python:  
 
-
-Bibliotecas Python: pip install requests httpx fastapi uvicorn psycopg2-binary
+Bibliotecas Python: 
+```bash
+pip install requests httpx fastapi uvicorn psycopg2-binary
+```
 
 #### Passo 1: Estrutura de Pastas
-
-.
+```
 ├── docker-compose.yml
 ├── stress_test.py
 ├── service-a-users/
@@ -63,13 +64,14 @@ Bibliotecas Python: pip install requests httpx fastapi uvicorn psycopg2-binary
 └── service-c-audit/
     ├── main.py
     └── Dockerfile
-
+```
 #### Passo 2: Execução
 
 Suba todo o ecossistema com um único comando:
 
+```bash
 docker-compose up --build -d
-
+```
 
 ---
 
@@ -79,9 +81,9 @@ docker-compose up --build -d
 
 O script `stress_test.py` simula concorrência e envia cabeçalhos que forçam o uso de diferentes bancos de dados.
 
-
+```bash
 python3 stress_test.py
-
+```
 
 **O que observar:**
 
@@ -92,13 +94,14 @@ python3 stress_test.py
 
 Após o teste, execute os comandos abaixo para confirmar que os dados foram fisicamente separados:
 
-
 # Contagem no Shard 1 (Default)
+```bash
 docker exec -it scale-cube-lab-postgres-db-1 psql -U postgres -d users_db -c "SELECT count(*) FROM users;"
-
+```
 # Contagem no Shard 2 (Premium)
+```bash
 docker exec -it scale-cube-lab-postgres-db-shard2-1 psql -U postgres -d users_db -c "SELECT count(*) FROM users;"
-
+```
 
 Cada banco deve conter exatamente 50% da carga total enviada.
 
@@ -108,8 +111,10 @@ Valide se o Service A notificou corretamente os outros sistemas:
 
 - **Redis (Sessões):**
 
-Redis (Sessões): docker exec -it <container_redis> redis-cli KEYS "*"
-
+Redis (Sessões): 
+```bash
+docker exec -it <container_redis> redis-cli KEYS "*"
+```
 
 - **MongoDB (Auditoria):**  
 Acesse `http://localhost:8003/audit` no navegador.
@@ -123,9 +128,9 @@ Uma das maiores vantagens do Eixo Z é o isolamento de falhas.
 #### Simular Falha
 
 Derrube o Shard 1:
-
+```bash
 docker stop scale-cube-lab-postgres-db-1.
-
+```
 
 #### Testar
 

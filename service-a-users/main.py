@@ -19,12 +19,14 @@ SHARDS = {
     "default": {
         "host": os.getenv("DB_HOST", "postgres-db"),
         "user": os.getenv("DB_USER", "postgres"),
-        "pass": os.getenv("DB_PASS", "password123")
+        "pass": os.getenv("DB_PASS", "password123"),
+        "dbname": "users_db_default"
     },
     "premium": {
         "host": os.getenv("DB_HOST_SHARD2", "postgres-db-shard2"),
         "user": os.getenv("DB_USER", "postgres"),
-        "pass": os.getenv("DB_PASS", "password123")
+        "pass": os.getenv("DB_PASS", "password123"),
+        "dbname": "users_db_premium"
     }
 }
 
@@ -38,7 +40,7 @@ def get_db_conn(tenant: str):
     try:
         conn = psycopg2.connect(
             host=config["host"],
-            database="users_db",
+            database=config["dbname"],
             user=config["user"],
             password=config["pass"],
             cursor_factory=RealDictCursor,

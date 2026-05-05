@@ -19,4 +19,5 @@ EXPOSE 8000
 
 # Comando para iniciar a aplicação
 # host 0.0.0.0 é crucial para rodar dentro de container
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENV OTEL_SERVICE_NAME=service-c-audit
+CMD ["opentelemetry-instrument", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

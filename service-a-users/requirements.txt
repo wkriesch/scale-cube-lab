@@ -2,3 +2,8 @@ fastapi
 uvicorn
 psycopg2-binary
 httpx
+opentelemetry-distro
+opentelemetry-exporter-otlp
+opentelemetry-instrumentation-fastapi
+opentelemetry-instrumentation-httpx
+opentelemetry-instrumentation-psycopg2

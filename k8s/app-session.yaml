@@ -33,6 +33,8 @@ spec:
           value: "redis-db"
         - name: REDIS_PORT
           value: "6379"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://jaeger:4318"
         resources:
           limits:
             cpu: "200m"

@@ -17,6 +17,6 @@ COPY main.py .
 # Expõe a porta (apenas documentação, quem define a porta real é o comando de run)
 EXPOSE 8000
 
-# Comando para iniciar a aplicação
-# host 0.0.0.0 é crucial para rodar dentro de container
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Comando para iniciar a aplicação com OTel
+ENV OTEL_SERVICE_NAME=service-a-users
+CMD ["opentelemetry-instrument", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

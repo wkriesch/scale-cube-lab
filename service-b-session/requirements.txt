@@ -2,3 +2,7 @@ fastapi
 uvicorn
 redis
 pydantic
+opentelemetry-distro
+opentelemetry-exporter-otlp
+opentelemetry-instrumentation-fastapi
+opentelemetry-instrumentation-redis

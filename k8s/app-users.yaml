@@ -18,13 +18,19 @@ spec:
         imagePullPolicy: Never
         env:
         - name: DB_HOST
-          value: "postgres-db"         # Aponta para o Service Default
+          value: "cockroachdb-public"
         - name: DB_HOST_SHARD2
-          value: "postgres-db-shard2"  # Aponta para o Service Premium
+          value: "cockroachdb-public"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASS
+          value: ""
         - name: SERVICE_B_URL
           value: "http://service-b:8000"
         - name: SERVICE_C_URL
           value: "http://service-c:8000"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://jaeger:4318"
         ports:
         - containerPort: 8000
 ---

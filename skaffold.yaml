@@ -1,0 +1,23 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+metadata:
+  name: scale-cube-lab
+build:
+  artifacts:
+    - image: service-a-users
+      context: service-a-users
+      docker:
+        dockerfile: Dockerfile
+    - image: service-b-session
+      context: service-b-session
+      docker:
+        dockerfile: Dockerfile
+    - image: service-c-audit
+      context: service-c-audit
+      docker:
+        dockerfile: Dockerfile
+  local:
+    push: false
+manifests:
+  rawYaml:
+    - k8s/*.yaml

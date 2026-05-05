@@ -1,0 +1,49 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: scale-cube-gateway
+  namespace: envoy-gateway-system # Verifique o namespace onde instalou o Envoy
+spec:
+  gatewayClassName: envoy-gateway
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: route-service-a
+spec:
+  parentRefs:
+    - name: scale-cube-gateway
+      namespace: envoy-gateway-system
+  hostnames: ["api.lab.local"]
+  rules:
+    # REGRA EIXO Z: Sharding por Header
+    - matches:
+        - headers:
+            - name: "X-Tenant-ID"
+              value: "tenant-a"
+      backendRefs:
+        - name: service-a
+          port: 8000
+    
+    # ROTA PADRÃO (EIXO Y): Por Path
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /users
+      backendRefs:
+        - name: service-a
+          port: 8000
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /session
+      backendRefs:
+        - name: service-b
+          port: 8000
